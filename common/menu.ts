@@ -3,6 +3,8 @@ interface Menu {
   title: string
   to: string
   action: string
+  atLogin: boolean
+  atLogout: boolean
 }
 
 export const menuItems: Menu[] = [
@@ -10,30 +12,42 @@ export const menuItems: Menu[] = [
     icon: 'mdi-view-list',
     title: '商品一覧',
     to: '/',
-    action: ''
+    action: '',
+    atLogin: true,
+    atLogout: true
   },
     {
     icon: 'mdi-cart',
     title: 'カート',
     to: '/cart',
-    action: ''
+    action: '',
+    atLogin: true,
+    atLogout: true
   },
   {
     icon: 'mdi-history',
     title: '注文履歴',
     to: '/history',
-    action: ''
+    action: '',
+    atLogin: true,
+    atLogout: false
   },
   {
     icon: 'mdi-login',
     title: 'ログイン',
     to: '/login',
-    action: ''
+    action: '',
+    atLogin: false,
+    atLogout: true
+
   },
   {
     icon: 'mdi-logout',
     title: 'ログアウト',
     to: '',
-    action: 'logout'
+    action: 'logout',
+    atLogin: true,
+    atLogout: false
+
   },
 ]

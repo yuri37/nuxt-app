@@ -7,7 +7,7 @@
     >
       <v-list>
         <v-list-item
-          v-for="(item, index) in menuItems"
+          v-for="(item, index) in isLoginList"
           :key="index"
           :to="item.to"
           @click="triggerClick(item.action)"
@@ -38,11 +38,11 @@
           >
         </NuxtLink>
       </v-toolbar-title>
-
+      <span v-if="isLogin === true">こんにちは、{{ isLogin }}さん</span>
       <v-tabs>
         <v-spacer/>
         <v-tab
-          v-for="(item, index) in menuItems"
+          v-for="(item, index) in isLoginList"
           :key="index"
           align="center"
           class="text-none"
@@ -57,35 +57,68 @@
 </template>
 
 <script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import { auth } from '../plugins/firebase'
 import * as menu from '../common/menu'
 
-export default {
-  data() {
-    return {
-      drawer: false,
-      login: true,
-      menuItems: menu.menuItems,
-      // siteTitle: 'ECサイト',
+@Component({
+  // layout: 'default',
+  components: {
+  }
+})
+
+export default class IndexPage extends Vue {
+
+  menuItems: any = menu.menuItems
+  drawer: boolean = false
+  isLogin: boolean = false
+
+  get isLoginList(){
+    if (this.isLogin === true) {
+    return this.menuItems.filter((item:any) => item.atLogin === true)
+    } else {
+    return this.menuItems.filter((item:any) => item.atLogout === true)
     }
-  },
-  methods: {
-    logout(){
-      console.log('ログアウト')
-    },
-    triggerClick(action:string) {
-      if (action === 'logout') {
-        console.log('logout')
-      } 
+  }
+
+  async mounted() {
+    await auth.onAuthStateChanged((user) => this.isLogin = user ? true : false)
+  }
+
+  async triggerClick(action:string) {
+    if (action === 'logout') {
+      await auth.signOut()
+      this.$router.push('/')
     }
-    // async logout() {
-    //   await this.$store.dispatch('auth/logout');
-    //   this.$router.push('/login');
-    // }
-  },
-  computed: {
-    //  
   }
 }
+
+// export default {
+//   data() {
+//     return {
+//       drawer: false,
+//       menuItems: menu.menuItems,
+//       // siteTitle: 'ECサイト',
+//     }
+//   },
+//   methods: {
+//     logout(){
+//       console.log('ログアウト')
+//     },
+//     triggerClick(action:string) {
+//       if (action === 'logout') {
+//         console.log('logout')
+//       } 
+//     }
+//     // async logout() {
+//     //   await this.$store.dispatch('auth/logout');
+//     //   this.$router.push('/login');
+//     // }
+//   },
+//   computed: {
+//     //  
+//   }
+// }
 </script>
 
 <style scoped lang="scss">
